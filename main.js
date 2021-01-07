@@ -3,13 +3,7 @@ const mexp = require('math-expression-evaluator')
 const fetch = require('node-fetch')
 const fs = require('fs')
 const json = fs.readFileSync('./countrySymbols.json')
-
 const countrySymbol = JSON.parse(json)
-
-
-
-
-
 
 // variables
 const client = new discord.Client()
