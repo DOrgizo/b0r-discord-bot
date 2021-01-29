@@ -11,7 +11,7 @@ const diceRoll = require('./commands/diceRoll')
 // Variables
 const client = new discord.Client()
 const version = 'v1.5'
-const secretToken = 'NzQ0MDM5MTQyNzE0OTAwNTEw.Xzdacw.WOi_SeV4AL7BfdIIz4Ictigk2qo'
+const secretToken = ''
 
 const commandsHelp = `
 COMANDOS DEL BOT: 
