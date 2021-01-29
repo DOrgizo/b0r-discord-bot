@@ -22,7 +22,7 @@ SIN C O R C H E T E S
 
 $help
 $version
-$price [criptomoneda]
+$btc
 $calc [expresión]
 $calc help
 $localbtc [moneda en formato ISO]
@@ -42,7 +42,7 @@ client.on('message', msg => {
 	// bot version command
 	else if(message === '$version') msg.channel.send(version)
 
-	// coinbase coin price command
+	// bitcoincoin price command
 	else if(message.startsWith('$btc')) btc(message, msg)
 
 	// eval math command	
