@@ -1,21 +1,21 @@
 const cheerio = require('cheerio')
-const request = require('request-promise')
+const got = require('got')
 
 module.exports = async function excelsiorPrices(message, msg) {
-	const search = message.slice(17, message.length)
+	const search = message.slice(18, message.length)
 
 	try {
 	const amount = 5
 	let array = new Array(amount)
-	let string = ''
+	let priceList = []
 
-	const $ = await request({
-		uri: `https://compraenlinea.excelsiorgama.com/search?q=${search}`,
-		transform: body => cheerio.load(body)
-	})
+	console.log(`https://compraenlinea.excelsiorgama.com/search?q=${search}`)
 
-	
+	const response = await got(`https://compraenlinea.excelsiorgama.com/search?q=${search}`)
 
+	const $ = cheerio.load(response.body)	
+
+	// añadiendo precios al array priceList de esta forma xq soy mongolico
 	for(let i = 0; i < amount; i++) {array[i] = {}}
 
 	$('.product__list--name').each((i , element) => {
@@ -28,9 +28,17 @@ module.exports = async function excelsiorPrices(message, msg) {
 	})
 
 	for(let i = 0; i < amount; i++) {
-		string += `${array[i].name} ${array[i].price}\n`
+		if(array[i].name === undefined||array[i].price === undefined) continue
+		priceList.push(`${array[i].name} ${array[i].price}`)
 	}
 
-	msg.channel.send('``' + string.slice(0, string.length - 2) + '``')}
-	catch(e) {msg.channel.send('``' + error + '``')}
+	priceList = priceList.join('\n')
+
+	if(priceList === '') msg.channel.send('``' + "no se mano" + '``') 
+	else msg.channel.send('``' + priceList + '``')
+	}
+
+	catch(error) {
+		console.log(error)
+	}
 }
