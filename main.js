@@ -1,17 +1,15 @@
 // Dependencies
 const discord = require('discord.js')
-const btc = require('./commands/btc')
+const coinGecko = require('./commands/coinGecko')
 const dolartoday = require('./commands/dolartoday')
 const expressionEvaluator = require('./commands/expressionEvaluator')
 const excelsiorPrices = require('./commands/excelsiorPriceItems')
 const localBitcoinPrices = require('./commands/localBitcoinPrices')
 const diceRoll = require('./commands/diceRoll')
-
+const {token, version, prefix} = require('./config.json')
 
 // Variables
 const client = new discord.Client()
-const version = 'v1.5'
-const secretToken = ''
 
 const commandsHelp = `
 COMANDOS DEL BOT: 
@@ -22,7 +20,7 @@ SIN C O R C H E T E S
 
 $help
 $version
-$btc
+$price [criptomoneda]
 $calc [expresión]
 $calc help
 $localbtc [moneda en formato ISO]
@@ -37,28 +35,28 @@ client.on('message', msg => {
 	const message =  msg.content
 
 	// help command
-	if(message === '$help') msg.channel.send('```' + commandsHelp + '```')
-
-	// bot version command
-	else if(message === '$version') msg.channel.send(version)
-
-	// bitcoincoin price command
-	else if(message.startsWith('$btc')) btc(message, msg)
-
-	// eval math command	
-	else if(message.startsWith('$calc')) expressionEvaluator(message, msg)
-
-	// localbitcoin command
-	else if(message.startsWith('$localbtc')) localBitcoinPrices(message, msg)
-
-	// dice roll command
-	else if(message.startsWith('$dice')) diceRoll(message, msg)
-
-	// dolartoday price command
-	else if(message.startsWith('$dolartoday')) dolartoday(msg)
+	if(message === prefix + 'help') msg.channel.send('```' + commandsHelp + '```')
 
 	// b0r cuanto cuesta [product] command
 	else if(message.startsWith("b0r cuanto cuesta")) excelsiorPrices(message, msg)
+
+	// eval math command	
+	else if(message.startsWith(prefix + 'calc')) expressionEvaluator(message, msg)
+
+	// localbitcoin command
+	else if(message.startsWith(prefix + 'localbtc')) localBitcoinPrices(message, msg)
+
+	// coingecko command
+	else if(message.startsWith(prefix + 'price')) coinGecko(message, msg)
+
+	// dice roll command
+	else if(message.startsWith(prefix + 'dice')) diceRoll(message, msg)
+
+	// dolartoday price command
+	else if(message === prefix + 'dolartoday') dolartoday(msg)
+	
+	// bot version command
+	else if(message === prefix + 'version') msg.channel.send(version)
 })
 
-client.login(secretToken)
+client.login(token)
