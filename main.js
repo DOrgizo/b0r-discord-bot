@@ -56,7 +56,7 @@ client.on('message', msg => {
 	else if(message === prefix + 'dolartoday') dolartoday(msg)
 	
 	// bot version command
-	else if(message === prefix + 'version') msg.channel.send(version)
+	else if(message === prefix + 'version') msg.channel.send('``' + version + '``')
 })
 
 client.login(token)
