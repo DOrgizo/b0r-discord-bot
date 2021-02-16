@@ -1,9 +1,14 @@
 const fetch = require('node-fetch')
+const fs = require('fs')
+const json = fs.readFileSync('./coinGeckoList.json')
+const coinGeckoList = JSON.parse(json)  
+
 
 module.exports = async function coinGecko(message, msg) {
+	
 	try {
 		const coin = message.slice(7, message.length)
-		const data = await fetch(`https://api.coingecko.com/api/v3/coins/${coin}`)
+		const data = await fetch(`https://api.coingecko.com/api/v3/coins/${coinGeckoList[coin]}`)
 		const json = await data.json()
 
 		const price =  json.market_data.current_price.usd * 1
@@ -13,6 +18,5 @@ module.exports = async function coinGecko(message, msg) {
 
 	catch(error) {
 		msg.channel.send('``' + "no es una criptomoneda o la escribiste mal subnormal" + '``')
-		console.log(error)
 	}
 }

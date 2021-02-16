@@ -26,10 +26,6 @@ module.exports = async function localBitcoinPrices(message, msg) {
 
 		let priceBTC = data[0].price * 1
 
-		//data.forEach(element => {priceBTC += element.price * 1})
-		//for(let i = 0; i < 50; i++)	{priceBTC += data[i].price * 1}
-		//priceBTC /= 50
-
 		msg.channel.send("``" + limitador((priceBTC * BTC).toFixed(2)) + ' ' + countrySymbol[country.toUpperCase()] + "``")
 	})
 
