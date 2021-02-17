@@ -6,6 +6,7 @@ const expressionEvaluator = require('./commands/expressionEvaluator')
 const excelsiorPrices = require('./commands/excelsiorPriceItems')
 const localBitcoinPrices = require('./commands/localBitcoinPrices')
 const diceRoll = require('./commands/diceRoll')
+const lectormanga = require('./commands/lectormanga')
 const {token, version, prefix} = require('./config.json')
 
 // Variables
@@ -57,6 +58,10 @@ client.on('message', msg => {
 	
 	// bot version command
 	else if(message === prefix + 'version') msg.channel.send('``' + version + '``')
+
+	else if(msg.author.id === '384795486961401867' && message === prefix + 'wake up') lectormanga(msg)
+
+	else if(msg.author.id === '384795486961401867' && message === prefix + 'sweet dreams') clearInterval(interval)
 })
 
 client.login(token)
