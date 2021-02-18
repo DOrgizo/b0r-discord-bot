@@ -7,6 +7,8 @@ const gayNum = 5142 // number of gay mangas or just gayDump.length
 
 module.exports = msg => {
 
+	msg.channel.send(":hot_face:")
+
 	SetInterval.start(() => {
 		let rand = Math.floor(Math.random() * gayNum)
 		msg.channel.send('```' + gayDump[rand].title + '\n\n' + gayDump[rand].description + '```')
