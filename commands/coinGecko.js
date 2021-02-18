@@ -12,8 +12,11 @@ module.exports = async function coinGecko(message, msg) {
 		const json = await data.json()
 
 		const price =  json.market_data.current_price.usd * 1
+		let percentage = json.market_data.price_change_percentage_1h_in_currency.usd * 1
 
-		msg.channel.send('``' + price + '$' + '``')
+		if(Math.sign(percentage) === 1) percentage = ('+' + Math.abs(percentage)) * 1
+
+		msg.channel.send('``' + price + '$' + ' ' + percentage + '%' + '``')
 	}
 
 	catch(error) {
