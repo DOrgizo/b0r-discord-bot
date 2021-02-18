@@ -8,7 +8,8 @@
     "discord.js": "^12.3.1",
     "got": "^11.8.1",
     "math-expression-evaluator": "^1.2.22",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "set-interval": "^2.1.2"
   },
   "scripts": {
     "start": "node main.js"
