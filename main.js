@@ -1,5 +1,6 @@
 // Dependencies
 const discord = require('discord.js')
+const SetInterval = require('set-interval') 
 const coinGecko = require('./commands/coinGecko')
 const dolartoday = require('./commands/dolartoday')
 const expressionEvaluator = require('./commands/expressionEvaluator')
@@ -11,7 +12,7 @@ const {token, version, prefix} = require('./config.json')
 
 // Variables
 const client = new discord.Client()
-
+const nanoneId = '384795486961401867'
 const commandsHelp = `
 COMANDOS DEL BOT: 
 
@@ -59,9 +60,9 @@ client.on('message', msg => {
 	// bot version command
 	else if(message === prefix + 'version') msg.channel.send('``' + version + '``')
 
-	else if(msg.author.id === '384795486961401867' && message === prefix + 'wake up') lectormanga(msg)
+	else if(msg.author.id === nanoneId && message === prefix + 'wake up') lectormanga(msg)
 
-	else if(msg.author.id === '384795486961401867' && message === prefix + 'sweet dreams') clearInterval(interval)
+	else if(msg.author.id === nanoneId && message === prefix + 'sweet dreams') SetInterval.clear(msg.channel.id)
 })
 
 client.login(token)
