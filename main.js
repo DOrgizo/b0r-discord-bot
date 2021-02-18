@@ -62,7 +62,10 @@ client.on('message', msg => {
 
 	else if(msg.author.id === nanoneId && message === prefix + 'wake up') lectormanga(msg)
 
-	else if(msg.author.id === nanoneId && message === prefix + 'sweet dreams') SetInterval.clear(msg.channel.id)
+	else if(msg.author.id === nanoneId && message === prefix + 'sweet dreams') {
+		msg.channel.send(':pleading_face:')
+		SetInterval.clear(msg.channel.id)
+	}
 })
 
 client.login(token)
