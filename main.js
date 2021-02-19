@@ -13,6 +13,8 @@ const {token, version, prefix} = require('./config.json')
 // Variables
 const client = new discord.Client()
 const nanoneId = '384795486961401867'
+const activeServers = {}
+
 const commandsHelp = `
 COMANDOS DEL BOT: 
 
@@ -60,7 +62,7 @@ client.on('message', msg => {
 	// bot version command
 	else if(message === prefix + 'version') msg.channel.send('``' + version + '``')
 
-	else if(msg.author.id === nanoneId && message === prefix + 'wake up') lectormanga(msg)
+	else if(msg.author.id === nanoneId && message === prefix + 'wake up') lectormanga(activeServers , msg)
 
 	else if(msg.author.id === nanoneId && message === prefix + 'sweet dreams') {
 		msg.channel.send(':pleading_face:')
