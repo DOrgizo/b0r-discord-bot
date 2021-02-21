@@ -23,6 +23,7 @@ SIN C O R C H E T E S
 
 $help
 $version
+$echo [texto a repetir por el bot]
 $price [criptomoneda]
 $calc [expresión]
 $calc help
@@ -61,6 +62,7 @@ client.on('message', msg => {
 	// bot version command
 	else if(message === prefix + 'version') msg.channel.send('``' + version + '``')
 
+	//echo command
 	else if(message.startsWith(prefix + 'echo')) msg.channel.send(message.slice(5, message.length))
 
 	// gay command (do not use pls)
