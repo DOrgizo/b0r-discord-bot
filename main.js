@@ -8,11 +8,10 @@ const excelsiorPrices = require('./commands/excelsiorPriceItems')
 const localBitcoinPrices = require('./commands/localBitcoinPrices')
 const diceRoll = require('./commands/diceRoll')
 const lectormanga = require('./commands/lectormanga')
-const {token, version, prefix} = require('./config.json')
+const {token, version, prefix, masterId} = require('./config.json')
 
 // Variables
 const client = new discord.Client()
-const nanoneId = '384795486961401867'
 const activeServers = {}
 
 const commandsHelp = `
@@ -62,12 +61,20 @@ client.on('message', msg => {
 	// bot version command
 	else if(message === prefix + 'version') msg.channel.send('``' + version + '``')
 
-	else if(msg.author.id === nanoneId && message === prefix + 'wake up') lectormanga(activeServers , msg)
+	// gay command (do not use pls)
+	else if(msg.author.id === nanoneId) {
+		if(message === prefix + "wake up") lectormanga(activeServers, msg)
 
-	else if(msg.author.id === nanoneId && message === prefix + 'sweet dreams') {
-		msg.channel.send(':pleading_face:')
-		SetInterval.clear(msg.channel.id)
+		else if(message === prefix + "sweet dreams") {
+			if(activeServers[msg.channel.id]) {
+				msg.channel.send(':pleading_face:')
+				SetInterval.clear(msg.channel.id)
+				delete activeServers[msg.channel.id]
+			} 
+			else msg.channel.send("No hay ningun :hot_face: activo")
+		}
 	}
+
 })
 
 client.login(token)
