@@ -62,7 +62,7 @@ client.on('message', msg => {
 	else if(message === prefix + 'version') msg.channel.send('``' + version + '``')
 
 	// gay command (do not use pls)
-	else if(msg.author.id === nanoneId) {
+	else if(msg.author.id === masterId) {
 		if(message === prefix + "wake up") lectormanga(activeServers, msg)
 
 		else if(message === prefix + "sweet dreams") {
