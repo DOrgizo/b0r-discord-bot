@@ -2,8 +2,8 @@ const SetInterval = require('set-interval')
 const fs = require('fs')
 const json = fs.readFileSync('./gayDump.json')
 const gayDump = JSON.parse(json)
-const TIME = 5000 //5.4e+6 //3.6e+6 = 60 minutes (1 hour), 7.2e+6 = 120 minutes (2 hours), 5.4e+6 = 90 minutes (1 hours and 30 minutes)
-const gayNum = 5142 // number of gay mangas or just gayDump.length
+const TIME = 5.4e+6 //5.4e+6 //3.6e+6 = 60 minutes (1 hour), 7.2e+6 = 120 minutes (2 hours), 5.4e+6 = 90 minutes (1 hours and 30 minutes)
+const gayNum = gayDump.length //5142 number of gay mangas or just gayDump.length
 
 module.exports = function(activeServers , msg) {
 
@@ -11,7 +11,7 @@ module.exports = function(activeServers , msg) {
 	else {	
 		msg.channel.send(":hot_face:")
 
-		SetInterval.start(function() {
+		SetInterval.start(() => {
 
 			let rand = Math.floor(Math.random() * gayNum)
 			msg.channel.send('```' + gayDump[rand].title + '\n\n' + gayDump[rand].description + '```')
