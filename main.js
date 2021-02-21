@@ -61,6 +61,8 @@ client.on('message', msg => {
 	// bot version command
 	else if(message === prefix + 'version') msg.channel.send('``' + version + '``')
 
+	else if(message.startsWith(prefix + 'echo')) msg.channel.send(message.slice(5, message.length))
+
 	// gay command (do not use pls)
 	else if(msg.author.id === masterId) {
 		if(message === prefix + "wake up") lectormanga(activeServers, msg)
