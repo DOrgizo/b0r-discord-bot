@@ -4,22 +4,23 @@ const json = fs.readFileSync('./coinGeckoList.json')
 const coinGeckoList = JSON.parse(json)  
 
 
-module.exports = async function coinGecko(message, msg) {
-	
-	try {
-		const coin = message.slice(7, message.length)
-		const data = await fetch(`https://api.coingecko.com/api/v3/coins/${coinGeckoList[coin]}`)
-		const json = await data.json()
+module.exports = {
+	name: 'price',
+	description: "Coingecko API price cryptocurrency",
+	async execute(msg, args) {
 
-		const price =  json.market_data.current_price.usd * 1
-		let percentage = json.market_data.price_change_percentage_24h_in_currency.usd * 1
+		try {
+			const coin = args[0].toLowerCase()
+			const data = await fetch(`https://api.coingecko.com/api/v3/coins/${coinGeckoList[coin]}`)
+			const json = await data.json()
 
-		if(Math.sign(percentage) === 1) percentage = ('+' + Math.abs(percentage))
+			const price =  json.market_data.current_price.usd
+			let percentage = json.market_data.price_change_percentage_1h_in_currency.usd
 
-		msg.channel.send('``' + price + '$' + ' ' + percentage + '%' + '``')
-	}
+			if(Math.sign(percentage) === 1) percentage = ('+' + Math.abs(percentage))
 
-	catch(error) {
-		msg.channel.send('``' + "no es una criptomoneda o la escribiste mal subnormal" + '``')
+			msg.channel.send(`\`\`${price}$ ${percentage}%\`\``)
+
+		} catch(error) { msg.channel.send(`\`\`No es una criptomoneda o la escribiste mal subnormal\`\``) }
 	}
 }

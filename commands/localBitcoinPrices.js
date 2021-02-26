@@ -10,24 +10,28 @@ const limitador = value => {
   	return (value[1] == '00' ? value[0] : value.join('.')) * 1 
 }
 
+module.exports = {
+	name: 'localbtc',
+	description: "comando para ver el ultimo precio de la moneda seleccionada a dolar basado en el btc",
+	async execute(msg, args) {
+		const country = args[0]
+		const urlPrices = `https://localbitcoins.com/bitcoincharts/${country}/trades.json`
 
-module.exports = async function localBitcoinPrices(message, msg) {
-	const country = message.slice(10, message.length).toLowerCase()	
-	const urlPrices = `https://localbitcoins.com/bitcoincharts/${country}/trades.json`
+		try {
 
-	let usd = await fetch('https://api.coinbase.com/v2/prices/spot?currency=USD')
-	usd = await usd.json()	
+			let usd = await fetch('https://api.coinbase.com/v2/prices/spot?currency=USD')
+			usd = await usd.json()	
 
-	const BTC = 1 / (usd.data.amount * 1)
+			const BTC = 1 / (usd.data.amount * 1)
 
-	fetch(urlPrices)
-	.then(res => res.json())
-	.then(data => {
+			let priceInfo = await fetch(urlPrices)
+			priceInfo = await priceInfo.json()
 
-		let priceBTC = data[0].price * 1
+			const priceCoin = priceInfo[0].price * 1
 
-		msg.channel.send("``" + limitador((priceBTC * BTC).toFixed(2)) + ' ' + countrySymbol[country.toUpperCase()] + "``")
-	})
-
-	.catch(err => msg.channel.send("pon una moneda en formato ISO valido retrasado"))
+			msg.channel.send(`\`\`${limitador(priceCoin * BTC).toFixed(2)} ${countrySymbol[country.toUpperCase()]}\`\``)
+		} catch(error) {
+			msg.channel.send("**Pon una divisa en formato ISO valido retrasado**")
+		}
+	}
 }

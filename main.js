@@ -1,82 +1,41 @@
 // Dependencies
-const discord = require('discord.js')
+const fs = require('fs')
+const Discord = require('discord.js')
 const SetInterval = require('set-interval') 
-const coinGecko = require('./commands/coinGecko')
-const dolartoday = require('./commands/dolartoday')
-const expressionEvaluator = require('./commands/expressionEvaluator')
-const excelsiorPrices = require('./commands/excelsiorPriceItems')
-const localBitcoinPrices = require('./commands/localBitcoinPrices')
-const diceRoll = require('./commands/diceRoll')
-const lectormanga = require('./commands/lectormanga')
-const {token, version, prefix, masterId} = require('./config.json')
+const {token, prefix} = require('./config.json')
+const excelsiorPrices = require('./commands/custom_commands/excelsiorPriceItems')
 
 // Variables
-const client = new discord.Client()
-const activeServers = {}
+activeServers = {}
+const client = new Discord.Client()
+client.commands = new Discord.Collection
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 
-const commandsHelp = `
-COMANDOS DEL BOT: 
+for(const file of commandFiles) {
+	const command = require(`./commands/${file}`)
+	client.commands.set(command.name, command)
+}
 
-Atención los comandos van sin corchetes SIN CORCHETES
-SIN CORCHETES
-SIN C O R C H E T E S
-
-$help
-$version
-$echo [texto a repetir por el bot]
-$price [criptomoneda]
-$calc [expresión]
-$calc help
-$localbtc [moneda en formato ISO]
-$dice [caras del dado] [cantidad de dados]
-$dolartoday 
-b0r cuanto cuesta [producto]
-`
 
 client.on('ready', () => console.log(`Logged in as ${client.user.tag}`) )
 
-client.on('message', msg => {
-	const message =  msg.content
+client.on('message', message => {
+	if(message.content.startsWith("b0r cuanto cuesta")) excelsiorPrices(message)
 
-	// help command
-	if(message === prefix + 'help') msg.channel.send('```' + commandsHelp + '```')
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-	// b0r cuanto cuesta [product] command
-	else if(message.startsWith("b0r cuanto cuesta")) excelsiorPrices(message, msg)
+	const args = message.content.slice(prefix.length).trim().split(/ +/)
+	const commandName = args.shift().toLowerCase()
 
-	// eval math command	
-	else if(message.startsWith(prefix + 'calc')) expressionEvaluator(message, msg)
+	if(!client.commands.get(commandName)) return
 
-	// localbitcoin command
-	else if(message.startsWith(prefix + 'localbtc')) localBitcoinPrices(message, msg)
+	const command = client.commands.get(commandName)
 
-	// coingecko command
-	else if(message.startsWith(prefix + 'price')) coinGecko(message, msg)
-
-	// dice roll command
-	else if(message.startsWith(prefix + 'dice')) diceRoll(message, msg)
-
-	// dolartoday price command
-	else if(message === prefix + 'dolartoday') dolartoday(msg)
-	
-	// bot version command
-	else if(message === prefix + 'version') msg.channel.send('``' + version + '``')
-
-	//echo command
-	else if(message.startsWith(prefix + 'echo')) msg.channel.send(message.slice(5, message.length))
-
-	// gay command (do not use pls)
-	else if(msg.author.id === masterId) {
-		if(message === prefix + "wake up") lectormanga(activeServers, msg)
-
-		else if(message === prefix + "sweet dreams") {
-			if(activeServers[msg.channel.id]) {
-				msg.channel.send(':pleading_face:')
-				SetInterval.clear(msg.channel.id)
-				delete activeServers[msg.channel.id]
-			} 
-			else msg.channel.send("No hay ningun :hot_face: activo")
-		}
+	try {
+		command.execute(message, args)
+	} catch(error) {
+		console.log(error)
+		message.reply("**¡Hubo un error en la ejecución del comando!**")
 	}
 
 })

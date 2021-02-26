@@ -23,17 +23,22 @@ const calcHelp = `
 	^       power operator eg. 2^3 returns 8
 	root    underroot function root 4 returns 2`
 
-module.exports = function expressionEvaluator(message, msg) {
-	if(message.slice(5, 10) === ' help') {
-			msg.channel.send('```' + calcHelp + '```')
-		}else {
-			const calc = message.slice(5, message.length)
-			let result = undefined
-		
-			try {result = mexp.eval(calc)}
+module.exports = {
+	name: 'calc',
+	description: "Evaluador de expresiones matematicas",
+	execute(msg, args) {
+		if(args[0] === 'help') msg.channel.send(`\`\`\`${calcHelp}\`\`\``)
 
-			catch(e) {result = "SYNTAX ERROR"}
+		else {
+			const calc = args.join(' ')
 
-			msg.channel.send('``' + result + '``')
+			try {
+				const result = mexp.eval(calc)
+				msg.channel.send(`\`\`${result}\`\``)
+
+			} catch(error) {
+				msg.channel.send(`\`\`SYNTAX ERROR\`\``)
+			}
 		}
+	}
 }
