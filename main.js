@@ -3,7 +3,8 @@ const fs = require('fs')
 const Discord = require('discord.js')
 const SetInterval = require('set-interval') 
 const {token, prefix} = require('./config.json')
-const excelsiorPrices = require('./commands/custom_commands/excelsiorPriceItems')
+const sqlite3 = require('sqlite3')
+const queryProductPrice = require('./commands/custom_commands/queryProductPrice')
 
 // Variables
 activeServers = {}
@@ -20,7 +21,10 @@ for(const file of commandFiles) {
 client.on('ready', () => console.log(`Logged in as ${client.user.tag}`) )
 
 client.on('message', message => {
-	if(message.content.startsWith("b0r cuanto cuesta")) excelsiorPrices(message)
+	if(message.content.startsWith("b0r cuanto cuesta")){
+		let db = new sqlite3.Database('./commands/custom_commands/scrapingPrices/db1.db')
+		queryProductPrice(message, db)
+	}
 
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
