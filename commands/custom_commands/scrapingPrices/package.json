@@ -1,0 +1,17 @@
+{
+  "name": "scrapingprices",
+  "version": "1.0.0",
+  "description": "scrapper for online venezuelan shops",
+  "main": "dumpPrices.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nanone",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.5",
+    "got": "^11.8.2",
+    "node-fetch": "^2.6.1",
+    "sqlite3": "^5.0.2"
+  }
+}
