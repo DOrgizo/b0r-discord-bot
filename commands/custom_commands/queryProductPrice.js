@@ -11,7 +11,7 @@ module.exports = function queryProductPrice(msg, db) {
 		 db.all(`
 			SELECT *
 			FROM Product
-			WHERE ProductName LIKE "%${productConf.slice(0, productConf.length - 1).join(' ')}%"
+			WHERE ProductName LIKE "${productConf.slice(0, productConf.length - 1).join(' ')}%"
 			ORDER BY ProductPrice ${order[arg]}
 			LIMIT 5
 			`, (err, rows) => {
@@ -26,7 +26,7 @@ module.exports = function queryProductPrice(msg, db) {
 		 db.all(`
 			SELECT *
 			FROM Product
-			WHERE ProductName LIKE "%${productConf.join(' ')}%"
+			WHERE ProductName LIKE "${productConf.join(' ')}%"
 			LIMIT 5
 			`, (err, rows) => {
 				result = rows.map(el => {
