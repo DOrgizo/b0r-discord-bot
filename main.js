@@ -7,7 +7,7 @@ const sqlite3 = require('sqlite3')
 const queryProductPrice = require('./commands/custom_commands/queryProductPrice')
 
 // Variables
-activeServers = {}
+global.activeServers = {}
 const client = new Discord.Client()
 client.commands = new Discord.Collection
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
@@ -21,8 +21,9 @@ for(const file of commandFiles) {
 client.on('ready', () => console.log(`Logged in as ${client.user.tag}`) )
 
 client.on('message', message => {
+	
 	if(message.content.startsWith("b0r cuanto cuesta")){
-		let db = new sqlite3.Database('./commands/custom_commands/scrapingPrices/db1.db')
+		const db = new sqlite3.Database('./commands/custom_commands/scrapingPrices/db1.db')
 		queryProductPrice(message, db)
 	}
 
