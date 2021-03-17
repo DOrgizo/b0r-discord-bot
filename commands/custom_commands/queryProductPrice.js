@@ -28,10 +28,24 @@ module.exports = function queryProductPrice(msg, db) {
 			WHERE ProductName LIKE "${productInfo.join(' ')}%"
 			LIMIT 5
 			`, (err, rows) => {
-				const result = rows.map(el => {
+				let result = rows.map(el => {
 					return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				})
-				 if(result.length === 0) msg.channel.send(`\`\`no se mano\`\``)
+				 if(result.length === 0) {
+				 	db.all(`
+				 		SELECT *
+				 		FROM Product
+				 		WHERE ProductName LIKE "%${productInfo.join(' ')}%"
+				 		LIMIT 5
+				 		`, (err, rows) => {
+				 			result = rows.map(el => {
+				 				return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
+				 			})
+				 			if(result.length === 0) msg.channel.send(`\`\`no se mano\`\``) 
+				 			else msg.channel.send(`\`\`${result.join('\n')}\`\``)
+				 		})
+				 }
+
 				 else msg.channel.send(`\`\`${result.join('\n')}\`\``)
 			})
 	}
