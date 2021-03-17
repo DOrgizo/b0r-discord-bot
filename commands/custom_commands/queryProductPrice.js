@@ -17,7 +17,23 @@ module.exports = function queryProductPrice(msg, db) {
 				const result = rows.map(el => {
 					return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				})
-				if(result.length === 0) msg.channel.send(`\`\`no se mano\`\``)
+				if(result.length === 0) {
+					db.all(`
+						SELECT * 
+						FROM Product
+						WHERE ProductName LIKE "%${productInfo.slice(0, productInfo.length - 1).join(' ')}%"
+						ORDER BY ProductPrice ${order[arg]}
+						LIMIT 5
+						`, (err, rows) => {
+							const result = rows.map(el => {
+								return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
+							})
+
+							if(result.length === 0) msg.channel.send(`\`\`no se mano\`\``) 
+							else msg.channel.send(`\`\`${result.join('\n')}\`\``)
+
+						})
+				}
 				else msg.channel.send(`\`\`${result.join('\n')}\`\``)
 			})
 	} else {
@@ -41,8 +57,10 @@ module.exports = function queryProductPrice(msg, db) {
 				 			result = rows.map(el => {
 				 				return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				 			})
+
 				 			if(result.length === 0) msg.channel.send(`\`\`no se mano\`\``) 
 				 			else msg.channel.send(`\`\`${result.join('\n')}\`\``)
+				 				
 				 		})
 				 }
 
