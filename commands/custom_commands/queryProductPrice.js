@@ -17,7 +17,7 @@ module.exports = function queryProductPrice(msg, db) {
 			`, `${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, (err, rows) => {
 
 				let result = rows.map(el => {
-					return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
+					return `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				})
 
 				if(result.length === 0) {
@@ -30,7 +30,7 @@ module.exports = function queryProductPrice(msg, db) {
 						`, `%${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, (err, rows) => {
 
 							result = rows.map(el => {
-								return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
+								return `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 							})
 
 							if(result.length === 0) msg.channel.send(`\`\`no se mano\`\``) 
@@ -49,7 +49,7 @@ module.exports = function queryProductPrice(msg, db) {
 			LIMIT 5
 			`, `${productInfo.join(' ')}%`, (err, rows) => {
 				let result = rows.map(el => {
-					return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
+					return `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				})
 				 if(result.length === 0) {
 				 	db.all(`
@@ -59,7 +59,7 @@ module.exports = function queryProductPrice(msg, db) {
 				 		LIMIT 5
 				 		`, `%${productInfo.join(' ')}%`,(err, rows) => {
 				 			result = rows.map(el => {
-				 				return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
+				 				return `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				 			})
 
 				 			if(result.length === 0) msg.channel.send(`\`\`no se mano\`\``) 
