@@ -40,16 +40,16 @@ module.exports = async function excelsior() {
 			productName.push($(product).text().trim())
 			})
 
-			console.log(productName)
-
 			$('.from-price-value').each((i, product) => {
-			prices.push($(product).text().trim().slice(3).replace(/[.]/g, '').replace(/,/g, '.') * 1)
+			prices.push($(product).text().trim().slice(10).replace(/,/g, '.') * 1)
 			})
+
 
 			if(productName[0] == undefined || productName == '') bool = false
 			else {
-				for(let i = 0; i < productName.length; i++) {
-				products.push(new Product(productName[i], prices[i], (prices[i] / dolarPrice.USD.dolartoday).toFixed(2) * 1))
+				for(let j = 0; j < productName.length; j++) {
+				products.push(new Product(productName[j], (prices[j] * dolarPrice.USD.promedio_real).toFixed(2) * 1, prices[j]))
+				console.log(products)
 				}
 			}
 			i++
