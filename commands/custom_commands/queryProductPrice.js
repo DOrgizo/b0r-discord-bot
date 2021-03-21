@@ -7,25 +7,29 @@ module.exports = function queryProductPrice(msg, db) {
 	const order = {LOW: 'ASC', HIGH: 'DESC'}
  
 	if(arg === 'HIGH' || arg === 'LOW') {
+
 		 db.all(`
 			SELECT *
 			FROM Product
-			WHERE ProductName LIKE "${productInfo.slice(0, productInfo.length - 1).join(' ')}%"
+			WHERE ProductName LIKE (?)
 			ORDER BY ProductPrice ${order[arg]}
 			LIMIT 5
-			`, (err, rows) => {
-				const result = rows.map(el => {
+			`, `${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, (err, rows) => {
+
+				let result = rows.map(el => {
 					return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				})
+
 				if(result.length === 0) {
 					db.all(`
 						SELECT * 
 						FROM Product
-						WHERE ProductName LIKE "%${productInfo.slice(0, productInfo.length - 1).join(' ')}%"
+						WHERE ProductName LIKE (?)
 						ORDER BY ProductPrice ${order[arg]}
 						LIMIT 5
-						`, (err, rows) => {
-							const result = rows.map(el => {
+						`, `%${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, (err, rows) => {
+
+							result = rows.map(el => {
 								return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 							})
 
@@ -41,9 +45,9 @@ module.exports = function queryProductPrice(msg, db) {
 		 db.all(`
 			SELECT *
 			FROM Product
-			WHERE ProductName LIKE "${productInfo.join(' ')}%"
+			WHERE ProductName LIKE (?)
 			LIMIT 5
-			`, (err, rows) => {
+			`, `${productInfo.join(' ')}%`, (err, rows) => {
 				let result = rows.map(el => {
 					return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				})
@@ -51,9 +55,9 @@ module.exports = function queryProductPrice(msg, db) {
 				 	db.all(`
 				 		SELECT *
 				 		FROM Product
-				 		WHERE ProductName LIKE "%${productInfo.join(' ')}%"
+				 		WHERE ProductName LIKE (?)
 				 		LIMIT 5
-				 		`, (err, rows) => {
+				 		`, `%${productInfo.join(' ')}%`,(err, rows) => {
 				 			result = rows.map(el => {
 				 				return `${el.ProductName} Bs ${new Intl.NumberFormat().format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				 			})
