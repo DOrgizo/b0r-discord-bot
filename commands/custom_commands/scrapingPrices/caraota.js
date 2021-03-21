@@ -34,7 +34,7 @@ module.exports = async function caraota() {
 		})
 
 		for(let i = 0; i < products.length; i++) {
-			item.push(new Product(products[i], (prices[i] * dolarPrice.USD.dolartoday).toFixed() * 1, prices[i]))
+			item.push(new Product(products[i], (prices[i] * dolarPrice.USD.promedio_real).toFixed() * 1, prices[i]))
 		}
 
 			let db = new sqlite3.Database('./db1.db')
