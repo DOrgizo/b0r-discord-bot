@@ -1,8 +1,8 @@
 const got = require('got')
 const cheerio = require('cheerio')
-const sqlite3 = require('sqlite3').verbose()
+const sqlite3 = require('sqlite3')
+const sqlite = require('sqlite')
 const fetch = require('node-fetch')
-const fs = require('fs')
 
 class Product{
 	constructor(product, price, dolarPrice) {
@@ -12,7 +12,7 @@ class Product{
 	}
 }
 
-const tags = ['VIVERES/c/001', 'ALIMENTOS-FRESCOS/c/002', 'BEBIDAS/c/003', 'CUIDADO-PERSONAL/c/004', 'LIMPIEZA/c/005', 'HOGAR/c/006', 'MASCOTAS/c/007', 'OCASIÓN/c/008', 'CUIDADO-DE-LA-SALUD/c/011']
+const categorys = ['VIVERES/c/001', 'ALIMENTOS-FRESCOS/c/002', 'BEBIDAS/c/003', 'CUIDADO-PERSONAL/c/004', 'LIMPIEZA/c/005', 'HOGAR/c/006', 'MASCOTAS/c/007', 'OCASIÓN/c/008', 'CUIDADO-DE-LA-SALUD/c/011']
 
 module.exports = async function excelsior() {
 
@@ -20,7 +20,7 @@ module.exports = async function excelsior() {
 	dolarPrice = await dolarPrice.json()
 	let products = []
 
-	for(const tag of tags) {
+	for(const tag of categorys) {
 		let bool = true
 		let i = 0
 		console.log(tag)
@@ -31,7 +31,8 @@ module.exports = async function excelsior() {
 	
 			let productName = []
 			let prices = []
-			
+
+			try {
 
 			const response = await got(`https://compraenlinea.excelsiorgama.com/${tag}/?q=%3Arelevance&page=${i}`)
 			const $ = cheerio.load(response.body)
@@ -47,25 +48,30 @@ module.exports = async function excelsior() {
 
 			if(productName[0] == undefined || productName == '') bool = false
 			else {
-				for(let j = 0; j < productName.length; j++) {
+				const length = productName.length
+				for(let j = 0; j < length; j++) {
 				products.push(new Product(productName[j], (prices[j] * dolarPrice.USD.promedio_real).toFixed(2) * 1, prices[j]))
-				console.log(products)
+				console.log(products[products.length - 1])
 				}
 			}
+		} catch(err) {}
 			i++
 		}
 } catch(err){}
 
 	}
 
-	let db = new sqlite3.Database('./db1.db')
+	const db = await sqlite.open({
+			filename: './db1.db',
+			driver: sqlite3.Database
+		})
  
          for(let i = 0; i < products.length; i++) {
-            let stmt = db.prepare(`REPLACE INTO Product VALUES ((?), (?), (?), (?))`)
-            stmt.run([products[i].product, products[i].price, products[i].dolarPrice, "Excelsior Gama"])
-            stmt.finalize()
+            let stmt = await db.prepare(`REPLACE INTO Product VALUES (?, ?, ?, ?)`)
+            await stmt.run(products[i].product, products[i].price, products[i].dolarPrice, "Excelsior Gama")
+            await stmt.finalize()
         }   
-        db.close()
+        await db.close()
 	console.log(products.length)
 
 }

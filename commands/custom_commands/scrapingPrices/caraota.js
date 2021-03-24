@@ -2,6 +2,7 @@ const got = require('got')
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
 const sqlite3 = require('sqlite3')
+const sqlite = require('sqlite')
 
 class Product{
 	constructor(product, price, dolarPrice) {
@@ -34,17 +35,20 @@ module.exports = async function caraota() {
 		})
 
 		for(let i = 0; i < products.length; i++) {
-			item.push(new Product(products[i], (prices[i] * dolarPrice.USD.promedio_real).toFixed(2) * 1, prices[i]))
+			item.push(new Product(products[i], (prices[i] * dolarPrice.USD.dolartoday).toFixed() * 1, prices[i]))
 		}
 
-			let db = new sqlite3.Database('./db1.db')
+		const db = await sqlite.open({
+			filename: './db1.db',
+			driver: sqlite3.Database
+		})
  
-         for(let i = 0; i < item.length; i++) {
-            let stmt = db.prepare(`REPLACE INTO Product VALUES ((?), (?), (?), (?))`)
-            stmt.run([item[i].product, item[i].price, item[i].dolarPrice, "Caraota Market"])
-            stmt.finalize()
+        for(let i = 0; i < item.length; i++) {
+            const stmt = await db.prepare("REPLACE INTO Product VALUES (?, ?, ?, ?)")
+            await stmt.run(item[i].product, item[i].price, item[i].dolarPrice, "Caraota Market")
+            await stmt.finalize()
         }   
-        db.close()
+       await db.close()
 
 	} catch(error) {
 		throw error
