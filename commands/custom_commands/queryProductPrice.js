@@ -15,7 +15,7 @@ module.exports = function queryProductPrice(msg, db) {
 			ORDER BY ProductPrice ${order[arg]}
 			LIMIT 5
 			`, `${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, (err, rows) => {
-
+				if(rows === undefined) return
 				let result = rows.map(el => {
 					return `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				})
@@ -48,6 +48,7 @@ module.exports = function queryProductPrice(msg, db) {
 			WHERE ProductName LIKE (?)
 			LIMIT 5
 			`, `${productInfo.join(' ')}%`, (err, rows) => {
+				if(rows === undefined) return
 				let result = rows.map(el => {
 					return `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`
 				})
