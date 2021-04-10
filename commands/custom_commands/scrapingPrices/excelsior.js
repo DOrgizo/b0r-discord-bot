@@ -14,10 +14,10 @@ class Product{
 
 const categorys = ['VIVERES/c/001', 'ALIMENTOS-FRESCOS/c/002', 'BEBIDAS/c/003', 'CUIDADO-PERSONAL/c/004', 'LIMPIEZA/c/005', 'HOGAR/c/006', 'MASCOTAS/c/007', 'OCASIÓN/c/008', 'CUIDADO-DE-LA-SALUD/c/011']
 
-module.exports = async function excelsior() {
+module.exports = async function excelsior(dolar) {
 
-	let dolarPrice = await fetch('https://s3.amazonaws.com/dolartoday/data.json')
-	dolarPrice = await dolarPrice.json()
+	/*let dolarPrice = await fetch('https://s3.amazonaws.com/dolartoday/data.json')
+	dolarPrice = await dolarPrice.json()*/
 	let products = []
 
 	for(const tag of categorys) {
@@ -45,12 +45,13 @@ module.exports = async function excelsior() {
 			prices.push($(product).text().trim().slice(10).replace(/,/g, '.') * 1)
 			})
 
-
+			// SI productName[0] es igual a undefined entonces se sale del bucle y da por terminado el scraping
+			// y SI es FALSO entonces seguira añadiendo productos al array de productos
 			if(productName[0] == undefined || productName == '') bool = false
 			else {
 				const length = productName.length
 				for(let j = 0; j < length; j++) {
-				products.push(new Product(productName[j], (prices[j] * dolarPrice.USD.promedio_real).toFixed(2) * 1, prices[j]))
+				products.push(new Product(productName[j], (prices[j] * dolar).toFixed(2) * 1, prices[j]))
 				console.log(products[products.length - 1])
 				}
 			}
@@ -68,10 +69,10 @@ module.exports = async function excelsior() {
  
          for(let i = 0; i < products.length; i++) {
             let stmt = await db.prepare(`REPLACE INTO Product VALUES (?, ?, ?, ?)`)
-            await stmt.run(products[i].product, products[i].price, products[i].dolarPrice, "Excelsior Gama")
-            await stmt.finalize()
+            stmt.run(products[i].product, products[i].price, products[i].dolarPrice, "Excelsior Gama")
+            stmt.finalize()
         }   
-        await db.close()
+        db.close()
 	console.log(products.length)
 
 }

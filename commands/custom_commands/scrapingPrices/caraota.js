@@ -12,15 +12,12 @@ class Product{
 	}
 }
 
-module.exports = async function caraota() {
-
-	let dolarPrice = await fetch('https://s3.amazonaws.com/dolartoday/data.json')
-	dolarPrice = await dolarPrice.json()
+module.exports = async function caraota(dolar) {
 
 	let products = []
 	let prices = []
 	let item = []
-	const url = 'https://caraotamarket.com/2-todos-los-productos'
+	const url = 'https://caraotamarket.com/3-tienda'
 	
 	try {
 		const response = await got(url)
@@ -35,7 +32,8 @@ module.exports = async function caraota() {
 		})
 
 		for(let i = 0; i < products.length; i++) {
-			item.push(new Product(products[i], (prices[i] * dolarPrice.USD.dolartoday).toFixed() * 1, prices[i]))
+			item.push(new Product(products[i], (prices[i] * dolar).toFixed() * 1, prices[i]))
+			console.log(item[i], i)
 		}
 
 		const db = await sqlite.open({
@@ -45,10 +43,10 @@ module.exports = async function caraota() {
  
         for(let i = 0; i < item.length; i++) {
             const stmt = await db.prepare("REPLACE INTO Product VALUES (?, ?, ?, ?)")
-            await stmt.run(item[i].product, item[i].price, item[i].dolarPrice, "Caraota Market")
-            await stmt.finalize()
+            stmt.run(item[i].product, item[i].price, item[i].dolarPrice, "Caraota Market")
+            stmt.finalize()
         }   
-       await db.close()
+       db.close()
 
 	} catch(error) {
 		throw error
