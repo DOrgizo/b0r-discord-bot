@@ -22,9 +22,18 @@ client.on('ready', () => console.log(`Logged in as ${client.user.tag}`) )
 
 client.on('message', message => {
 	
-	if(message.content.startsWith("b0r cuanto cuesta")){
-		const db = new sqlite3.Database('./commands/custom_commands/scrapingPrices/db1.db')
-		queryProductPrice(message, db)
+	if(message.content.startsWith("b0r cuanto")){
+
+		const test = message.content.split(/ +/)[2] // nombre temporal hasta que piense en algo mejor o no haga 1 codigo de mierda como este
+
+		if(test === 'cuesta' || test === 'sale' || test === 'vale') {
+
+			// ya no necesito declarar la base de datos aqui pero soy retardado y me da flojera acomomodarlo
+			const db = new sqlite3.Database('./commands/custom_commands/scrapingPrices/db1.db')
+			queryProductPrice(message, db)
+		}
+
+		else return
 	}
 
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
