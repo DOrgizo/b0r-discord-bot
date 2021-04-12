@@ -2,12 +2,23 @@ const sqlite3 = require('sqlite3')
 
 module.exports = function queryProductPrice(msg, db) {
 
-	let productInfo = msg.content.slice(18).trim().toUpperCase().split(/ +/)
-	const arg = productInfo[productInfo.length - 1]
+	msg.content = msg.content.toUpperCase()
+	// NO HACER NUNCA
+	const vowels = [['Á', 'A'], ['É', 'E'], ['Í', 'I'], ['Ó', 'O'], ['Ú', 'U']]
+
+	for(vowel of vowels) {
+		const letter = new RegExp(vowel[0], 'g')
+		msg.content = msg.content.replace(letter, vowel[1])
+	}
+	// LO DE ARRIBA
+
+	let productInfo = msg.content.trim().split(/ +/).slice(3)
+	const arg = productInfo[productInfo.length - 1] // nombre de mierda, pensar en uno mejor por favor
 	const order = {LOW: 'ASC', HIGH: 'DESC'}
  
 	if(arg === 'HIGH' || arg === 'LOW') {
 
+		// NO HACER NUNCA POR FAVOR
 		 db.all(`
 			SELECT *
 			FROM Product
@@ -42,7 +53,9 @@ module.exports = function queryProductPrice(msg, db) {
 				else msg.channel.send(`\`\`${result.join('\n')}\`\``)
 
 			})
-	}
+	} 
+
+	// NO HACER LO DE ARRIBA POR FAVOR
 
 	db.close()
 }
