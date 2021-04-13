@@ -2,7 +2,6 @@ const got = require('got')
 const cheerio = require('cheerio')
 const sqlite3 = require('sqlite3')
 const sqlite = require('sqlite')
-const fetch = require('node-fetch')
 
 class Product{
 	constructor(product, price, dolarPrice) {
@@ -16,8 +15,6 @@ const categorys = ['VIVERES/c/001', 'ALIMENTOS-FRESCOS/c/002', 'BEBIDAS/c/003', 
 
 module.exports = async function excelsior(dolar) {
 
-	/*let dolarPrice = await fetch('https://s3.amazonaws.com/dolartoday/data.json')
-	dolarPrice = await dolarPrice.json()*/
 	let products = []
 
 	for(const tag of categorys) {
@@ -62,6 +59,7 @@ module.exports = async function excelsior(dolar) {
 
 	}
 
+	console.time("Excelsior Gama")
 	const db = await sqlite.open({
 			filename: './db1.db',
 			driver: sqlite3.Database
@@ -73,6 +71,8 @@ module.exports = async function excelsior(dolar) {
             stmt.finalize()
         }   
         db.close()
+
+    console.timeEnd("Excelsior Gama")
 	console.log(products.length)
 
 }

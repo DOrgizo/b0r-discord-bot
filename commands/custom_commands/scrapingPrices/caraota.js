@@ -1,5 +1,4 @@
 const got = require('got')
-const fetch = require('node-fetch')
 const cheerio = require('cheerio')
 const sqlite3 = require('sqlite3')
 const sqlite = require('sqlite')
@@ -36,6 +35,8 @@ module.exports = async function caraota(dolar) {
 			console.log(item[i], i)
 		}
 
+		console.time("Caraota Market")
+
 		const db = await sqlite.open({
 			filename: './db1.db',
 			driver: sqlite3.Database
@@ -47,6 +48,8 @@ module.exports = async function caraota(dolar) {
             stmt.finalize()
         }   
        db.close()
+
+       console.timeEnd("Caraota Market")
 
 	} catch(error) {
 		throw error
