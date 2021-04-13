@@ -11,15 +11,13 @@ const test = async () => {
 	let dolar = await data.json()
 
 	console.time('test')
-	await excelsior(dolar.USD.promedio_real) 
-	await caraota(dolar.USD.promedio_real)
 	await elplazas(dolar.USD.promedio_real)
-	console.timeEnd('Scraping Prices TIME')
+	await caraota(dolar.USD.promedio_real)
+	await excelsior(dolar.USD.promedio_real) 
+	console.timeEnd('test')
 
 	
 }
 
-test()
 
-
-//setInterval(() => test(), TIME)
+setInterval(() => test(), TIME)

@@ -63,13 +63,13 @@ module.exports = async function elplazas(dolar) {
 			driver: sqlite3.Database
 		})
 
-	const productsLength = product.length
+	const productsLength = products.length
          for(let i = 0; i < productsLength; i++) {
             let stmt = await db.prepare(`REPLACE INTO Product VALUES (?, ?, ?, ?)`)
             stmt.run(products[i].product, products[i].price, products[i].dolarPrice, "El Plazas")
-            stmt.finalize()
+            await stmt.finalize()
         }   
-        db.close()
+    db.close()
 
     console.timeEnd("El Plazas")
 	console.log(products.length)

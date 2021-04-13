@@ -68,7 +68,7 @@ module.exports = async function excelsior(dolar) {
          for(let i = 0; i < products.length; i++) {
             let stmt = await db.prepare(`REPLACE INTO Product VALUES (?, ?, ?, ?)`)
             stmt.run(products[i].product, products[i].price, products[i].dolarPrice, "Excelsior Gama")
-            stmt.finalize()
+            await stmt.finalize()
         }   
         db.close()
 

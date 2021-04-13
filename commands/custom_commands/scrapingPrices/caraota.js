@@ -2,6 +2,7 @@ const got = require('got')
 const cheerio = require('cheerio')
 const sqlite3 = require('sqlite3')
 const sqlite = require('sqlite')
+const fs = require('fs')
 
 class Product{
 	constructor(product, price, dolarPrice) {
@@ -19,6 +20,7 @@ module.exports = async function caraota(dolar) {
 	const url = 'https://caraotamarket.com/3-tienda'
 	
 	try {
+
 		const response = await got(url)
 		const $ = cheerio.load(response.body)
 
@@ -27,6 +29,7 @@ module.exports = async function caraota(dolar) {
 		})
 
 		$('.price').each((i, price) => {
+			console.log()
 			prices.push($(price).text().trim().slice(1).replace(/,/g, '.') * 1)
 		})
 
@@ -43,13 +46,15 @@ module.exports = async function caraota(dolar) {
 		})
  
         for(let i = 0; i < item.length; i++) {
-            const stmt = await db.prepare("REPLACE INTO Product VALUES (?, ?, ?, ?)")
+        	const stmt = await db.prepare("REPLACE INTO Product VALUES (?, ?, ?, ?)")
             stmt.run(item[i].product, item[i].price, item[i].dolarPrice, "Caraota Market")
-            stmt.finalize()
+            await stmt.finalize()
         }   
-       db.close()
+        
+		db.close()
 
-       console.timeEnd("Caraota Market")
+       	console.log(item.length)
+       	console.timeEnd("Caraota Market")
 
 	} catch(error) {
 		throw error
