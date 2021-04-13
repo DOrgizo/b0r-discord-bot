@@ -38,25 +38,35 @@ module.exports = async function caraota(dolar) {
 			console.log(item[i], i)
 		}
 
-		console.time("Caraota Market")
-
-		const db = await sqlite.open({
-			filename: './db1.db',
-			driver: sqlite3.Database
-		})
- 
-        for(let i = 0; i < item.length; i++) {
-        	const stmt = await db.prepare("REPLACE INTO Product VALUES (?, ?, ?, ?)")
-            stmt.run(item[i].product, item[i].price, item[i].dolarPrice, "Caraota Market")
-            await stmt.finalize()
-        }   
-        
-		db.close()
-
-       	console.log(item.length)
-       	console.timeEnd("Caraota Market")
-
 	} catch(error) {
 		throw error
 	}
+
+	console.time("Caraota Market")
+	const db = await sqlite.open({
+		filename: './db1.db',
+		driver: sqlite3.Database
+	})
+
+	const length = item.length
+	const query = products.map(el => "((?), (?), (?), (?))").join(',')
+	const sql = `REPLACE INTO Product
+		 		 VALUES ${query}`
+	let array = []
+
+	for(let i = 0; i < length; i++) {
+		array.push(item[i].product)
+		array.push(item[i].price)
+		array.push(item[i].dolarPrice)
+		array.push("Caraota Market")
+	}
+
+	let stmt = await db.prepare(sql)
+	await stmt.run(array)
+	stmt.finalize()
+        
+	db.close()
+
+    console.log(item.length)
+    console.timeEnd("Caraota Market")
 }

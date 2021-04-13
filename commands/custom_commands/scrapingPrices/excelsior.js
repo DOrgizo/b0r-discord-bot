@@ -61,16 +61,28 @@ module.exports = async function excelsior(dolar) {
 
 	console.time("Excelsior Gama")
 	const db = await sqlite.open({
-			filename: './db1.db',
-			driver: sqlite3.Database
-		})
- 
-         for(let i = 0; i < products.length; i++) {
-            let stmt = await db.prepare(`REPLACE INTO Product VALUES (?, ?, ?, ?)`)
-            stmt.run(products[i].product, products[i].price, products[i].dolarPrice, "Excelsior Gama")
-            await stmt.finalize()
-        }   
-        db.close()
+		filename: './db1.db',
+		driver: sqlite3.Database
+	})
+	const length = products.length
+	const query = products.map(el => "((?), (?), (?), (?))").join(',')
+	const sql = `REPLACE INTO Product
+			 VALUES ${query}`
+	let array = []
+
+	for(let i = 0; i < length; i++) {
+		array.push(products[i].product)
+		array.push(products[i].price)
+		array.push(products[i].dolarPrice)
+		array.push("Excelsior Gama")
+	}
+
+	let stmt = await db.prepare(sql)
+	await stmt.run(array)
+	stmt.finalize()
+	
+
+    db.close()
 
     console.timeEnd("Excelsior Gama")
 	console.log(products.length)

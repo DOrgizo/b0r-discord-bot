@@ -63,12 +63,23 @@ module.exports = async function elplazas(dolar) {
 			driver: sqlite3.Database
 		})
 
-	const productsLength = products.length
-         for(let i = 0; i < productsLength; i++) {
-            let stmt = await db.prepare(`REPLACE INTO Product VALUES (?, ?, ?, ?)`)
-            stmt.run(products[i].product, products[i].price, products[i].dolarPrice, "El Plazas")
-            await stmt.finalize()
-        }   
+	const length = products.length
+	const query = products.map(el => "((?), (?), (?), (?))").join(',')
+	const sql = `REPLACE INTO Product
+			 VALUES ${query}`
+	let array = []
+
+	for(let i = 0; i < length; i++) {
+		array.push(products[i].product)
+		array.push(products[i].price)
+		array.push(products[i].dolarPrice)
+		array.push("El Plazas")
+	}
+
+	let stmt = await db.prepare(sql)
+	await stmt.run(array)
+	stmt.finalize()
+            
     db.close()
 
     console.timeEnd("El Plazas")
