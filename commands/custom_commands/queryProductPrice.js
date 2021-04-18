@@ -15,25 +15,21 @@ module.exports = function queryProductPrice(msg, db) {
 	let productInfo = msg.content.trim().split(/ +/).slice(3)
 	const arg = productInfo[productInfo.length - 1] // nombre de mierda, pensar en uno mejor por favor
 	const order = {LOW: 'ASC', HIGH: 'DESC'}
- 
-	if(arg === 'HIGH' || arg === 'LOW') {
+	const productNameFormated = "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, \"Á\", \"A\"), \"É\", \"E\"), \"Í\", \"I\"), \"Ó\", \"O\"), \"Ú\", \"U\")"
 
+	if(arg === 'HIGH' || arg === 'LOW') {
+		const product = productInfo.slice(0, productInfo.length - 1).join(' ')
 		// NO HACER NUNCA POR FAVOR
 		 db.all(`
 			SELECT * FROM Product
-			WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U")
-			LIKE CASE 
-			WHEN (
-					SELECT COUNT(ProductName) 
-					FROM Product 
-					WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U") LIKE (?)
-				 ) > 0 
-			THEN (?)
+			WHERE ${productNameFormated} LIKE 
+			CASE 
+			WHEN (SELECT COUNT(ProductName) FROM Product WHERE ${productNameFormated} LIKE (?)) > 0 THEN (?)
 			ELSE (?) 
 			END
 			ORDER BY ProductPrice ${order[arg]}
 			LIMIT 6
-			`, `${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, `${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, `%${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, (err, rows) => {
+			`, `${product}%`, `${product}%`, `%${product}%`, (err, rows) => {
 
 				if(rows === undefined) return
 
@@ -48,21 +44,17 @@ module.exports = function queryProductPrice(msg, db) {
 			})
 	} else {
 
+		const product = productInfo.join(' ')
 		 db.all(`
 			SELECT * FROM Product
-			WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U")
-			LIKE CASE 
-			WHEN (
-					SELECT COUNT(ProductName) 
-					FROM Product 
-					WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U") 
-					LIKE (?)
-				 ) > 0 
-			THEN (?)
+			WHERE ${productNameFormated}
+			LIKE 
+			CASE 
+			WHEN ( SELECT COUNT(ProductName) FROM Product WHERE ${productNameFormated} LIKE (?) ) > 0 THEN (?)
 			ELSE (?) 
 			END
 			LIMIT 6
-			`, `${productInfo.join(' ')}%`, `${productInfo.join(' ')}%`, `%${productInfo.join(' ')}%`, (err, rows) => {
+			`, `${product}%`, `${product}%`, `%${product}%`, (err, rows) => {
 
 				if(rows === undefined) return
 
