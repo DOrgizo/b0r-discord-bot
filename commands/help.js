@@ -16,7 +16,7 @@ $dice [caras del dado] [cantidad de dados]
 $dolartoday
 $awake (solo disponible para Nanone)
 $sleep (solo disponible para Nanone) 
-b0r cuanto cuesta [producto] [low | high] <- (OPCIONAL)
+b0r cuanto cuesta|vale|sale [producto] [low | high] <- (OPCIONAL)
 `
 
 module.exports = {
