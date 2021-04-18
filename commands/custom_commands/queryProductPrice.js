@@ -20,63 +20,59 @@ module.exports = function queryProductPrice(msg, db) {
 
 		// NO HACER NUNCA POR FAVOR
 		 db.all(`
-			SELECT *
-			FROM Product
-			WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U") LIKE (?)
+			SELECT * FROM Product
+			WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U")
+			LIKE CASE 
+			WHEN (
+					SELECT COUNT(ProductName) 
+					FROM Product 
+					WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U") LIKE (?)
+				 ) > 0 
+			THEN (?)
+			ELSE (?) 
+			END
 			ORDER BY ProductPrice ${order[arg]}
 			LIMIT 6
-			`, `${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, (err, rows) => {
+			`, `${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, `${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, `%${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, (err, rows) => {
 
 				if(rows === undefined) return
 
 				let result = rows.map(el => `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`)
 
 				if(result.length === 0) {
-					db.all(`
-						SELECT * FROM Product
-						WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U") LIKE (?)
-						ORDER BY ProductPrice ${order[arg]}
-						LIMIT 6
-						`, `%${productInfo.slice(0, productInfo.length - 1).join(' ')}%`, (err, rows) => {
-							if(rows === undefined) return
-
-							let result = rows.map(el => `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`)
-
-							if(result.length === 0) msg.channel.send(`\`\`no se mano\`\``)
-							else msg.channel.send(`\`\`${result.join('\n')}\`\``)
-						})
+					msg.channel.send(`\`\`no se mano\`\``)
+					return
 				}
 				
-				else msg.channel.send(`\`\`${result.join('\n')}\`\``)
+				msg.channel.send(`\`\`${result.join('\n')}\`\``)
 			})
 	} else {
 
 		 db.all(`
 			SELECT * FROM Product
-			WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U") LIKE (?)
+			WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U")
+			LIKE CASE 
+			WHEN (
+					SELECT COUNT(ProductName) 
+					FROM Product 
+					WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U") 
+					LIKE (?)
+				 ) > 0 
+			THEN (?)
+			ELSE (?) 
+			END
 			LIMIT 6
-			`, `${productInfo.join(' ')}%`, (err, rows) => {
+			`, `${productInfo.join(' ')}%`, `${productInfo.join(' ')}%`, `%${productInfo.join(' ')}%`, (err, rows) => {
 
 				if(rows === undefined) return
 
 				let result = rows.map(el => `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`)
 
 				if(result.length === 0) {
-					db.all(`
-						SELECT * FROM Product
-						WHERE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(ProductName, "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U") LIKE (?)
-						LIMIT 6
-						`, `%${productInfo.join(' ')}%`, (err, rows) => {
-
-							if(rows === undefined) return
-
-							let result = rows.map(el => `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`)
-
-							if(result.length === 0) msg.channel.send(`\`\`no se mano\`\``)
-							else msg.channel.send(`\`\`${result.join('\n')}\`\``)
-						})
-				}
-				else msg.channel.send(`\`\`${result.join('\n')}\`\``)
+					msg.channel.send(`\`\`no se mano\`\``)
+					return
+				} 
+				msg.channel.send(`\`\`${result.join('\n')}\`\``)
 
 			})
 	} 
