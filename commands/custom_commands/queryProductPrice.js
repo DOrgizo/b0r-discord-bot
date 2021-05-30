@@ -33,7 +33,7 @@ module.exports = function queryProductPrice(msg, db) {
 
 				if(rows === undefined) return
 
-				let result = rows.map(el => `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDolarPrice}$ ${el.MarketName}`)
+				let result = rows.map(el => `${el.ProductName} Bs ${new Intl.NumberFormat('es-ES').format(el.ProductPrice)} ${el.ProductDollarPrice}$ ${el.MarketName}`)
 
 				if(result.length === 0) {
 					msg.channel.send(`\`\`no se mano\`\``)
