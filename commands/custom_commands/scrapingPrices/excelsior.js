@@ -30,8 +30,8 @@ module.exports = async function excelsior(dolar) {
 			let prices = []
 
 			try {
-
-			const response = await got(`https://compraenlinea.excelsiorgama.com/${tag}/?q=%3Arelevance&page=${i}`)
+			
+			const response = await got(`https://gamaenlinea.com/${tag}/?q=%3Arelevance&page=${i}`)
 			const $ = cheerio.load(response.body)
 
 			$('.product__list--name').each((i, product) => {
