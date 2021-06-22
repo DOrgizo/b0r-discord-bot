@@ -25,7 +25,7 @@ client.on('ready', () => {
 	const TIME = 4.32e+7 // 12 horas
 	console.log(`Logged in as ${client.user.tag}`)
 
-	client.channels.fetch('811448091546615832')
+	client.channels.fetch('809483097401196558')
     .then(channel => {
         setInterval( () => channel.send(`no aguanto la pela: 
         	**BTC**: \`\`3QWUrX26z2itUUCydbN3tKeW9FLq2bEQCR\`\`
