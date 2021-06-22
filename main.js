@@ -21,7 +21,18 @@ for(const file of commandFiles) {
 const keyword = new Set(['cuesta', 'cuestan', 'vale', 'valen', 'sale', 'salen'])
 
 
-client.on('ready', () => console.log(`Logged in as ${client.user.tag}`) )
+client.on('ready', () => {
+	const TIME = 4.32e+7 // 12 horas
+	console.log(`Logged in as ${client.user.tag}`)
+
+	client.channels.fetch('811448091546615832')
+    .then(channel => {
+        setInterval( () => channel.send(`no aguanto la pela: 
+        	**BTC**: \`\`3QWUrX26z2itUUCydbN3tKeW9FLq2bEQCR\`\`
+        	**ICX**: \`\`hxbb9f109b1427c44e9f50668c8fb54bbcfedb866e\`\`
+        	`), TIME) 
+    })
+} )
 
 client.on('message', message => {
 	
