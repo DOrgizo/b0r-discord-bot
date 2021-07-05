@@ -61,7 +61,7 @@ client.on('message', message => {
 		queryProductPrice(message, db)
 		
 	}	else if(/colomb|colombia/gi.test(message.content) !== false && !message.author.bot) message.channel.send("malditos **colombianos**")
-		else if(/zambo|zamba|veneco|veneca/gi.test(message.content) !== false && !message.author.bot) {
+		else if(/zambo|zamba|veneco|veneca|:echaitopanlante:|:justoenlapatria:|:sheeeeeiitt:|:peruzuela:/gi.test(message.content) !== false && !message.author.bot) {
 			const rand = Math.floor(Math.random() * ecuatorianos.length)
 			message.channel.send(ecuatorianos[rand])
 		}
